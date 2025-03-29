@@ -770,8 +770,8 @@ class Controls:
             lac_log.active and self.events.add(FrogPilotEventName.firefoxSteerSaturated)
             self.params_memory.put_int("CurrentRandomEvent", 1)
             self.random_event_triggered = True
-          else:
-            lac_log.active and self.events.add(FrogPilotEventName.frogSteerSaturated if self.goat_scream else EventName.steerSaturated)
+#           else:
+#             lac_log.active and self.events.add(FrogPilotEventName.frogSteerSaturated if self.goat_scream else EventName.steerSaturated)
       elif lac_log.saturated:
         dpath_points = lat_plan.dPathPoints
         if len(dpath_points):
