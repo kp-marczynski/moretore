@@ -71,9 +71,7 @@ class CarController(CarControllerBase):
       # send HUD alerts
       if self.frame % 50 == 0:
         ldw = CC.hudControl.visualAlert == VisualAlert.ldw
-        steer_required = CC.hudControl.visualAlert == VisualAlert.steerRequired
-        # TODO: find a way to silence audible warnings so we can add more hud alerts
-        steer_required = steer_required and CS.lkas_allowed_speed
+        steer_required = CS.out.steerFaultTemporary
         if not self.CP.flags & MazdaFlags.NO_FSC:
           can_sends.append(mazdacan.create_alert_command(self.packer, CS.cam_laneinfo, ldw, steer_required))
 
@@ -150,8 +148,7 @@ class CarController(CarControllerBase):
         can_sends.append(mazdacan.create_acc_cmd(self, self.packer, CS.acc, hold, resume))
 
     # send steering command
-    can_sends.extend(mazdacan.create_steering_control(self.packer, self.CP,
-                                                      self.frame, apply_steer, CS.cam_lkas))
+    can_sends.append(mazdacan.create_ti_steering_control(self.packer, self.CP, ti_apply_steer))
 
     new_actuators = CC.actuators.as_builder()
     new_actuators.steer = apply_steer / self.ccp.STEER_MAX

@@ -4,7 +4,7 @@ from openpilot.common.conversions import Conversions as CV
 from opendbc.can.can_define import CANDefine
 from opendbc.can.parser import CANParser
 from openpilot.selfdrive.car.interfaces import CarStateBase
-from openpilot.selfdrive.car.mazda.values import DBC, LKAS_LIMITS, MazdaFlags, TI_STATE, CarControllerParams
+from openpilot.selfdrive.car.mazda.values import CAR, DBC, LKAS_LIMITS, MazdaFlags, TI_STATE, CarControllerParams
 
 class CarState(CarStateBase):
   def __init__(self, CP):
@@ -93,7 +93,7 @@ class CarState(CarStateBase):
     ret.steeringPressed = abs(ret.steeringTorque) > LKAS_LIMITS.STEER_THRESHOLD
 
     ret.steeringTorqueEps = cp.vl["STEER_TORQUE"]["STEER_TORQUE_MOTOR"]
-    ret.steeringRateDeg = cp.vl["STEER_RATE"]["STEER_ANGLE_RATE"]
+    # ret.steeringRateDeg = cp.vl["STEER_RATE"]["STEER_ANGLE_RATE"]
 
     # TODO: this should be from 0 - 1.
     ret.brakePressed = cp.vl["PEDALS"]["BRAKE_ON"] == 1
@@ -108,7 +108,7 @@ class CarState(CarStateBase):
     ret.gasPressed = ret.gas > 0
 
     # Either due to low speed or hands off
-    lkas_blocked = cp.vl["STEER_RATE"]["LKAS_BLOCK"] == 1
+    lkas_blocked = False
 
     if self.CP.minSteerSpeed > 0:
       # LKAS is enabled at 52kph going up and disabled at 45kph going down
@@ -140,7 +140,7 @@ class CarState(CarStateBase):
     # Check if LKAS is disabled due to lack of driver torque when all other states indicate
     # it should be enabled (steer lockout). Don't warn until we actually get lkas active
     # and lose it again, i.e, after initial lkas activation
-    ret.steerFaultTemporary = self.lkas_allowed_speed and lkas_blocked and not self.ti_lkas_allowed
+    ret.steerFaultTemporary = False
 
     self.acc_active_last = ret.cruiseState.enabled
 
@@ -244,12 +244,12 @@ class CarState(CarStateBase):
         # sig_address, frequency
         ("BLINK_INFO", 10),
         ("STEER", 67),
-        ("STEER_RATE", 83),
         ("STEER_TORQUE", 83),
         ("WHEEL_SPEEDS", 100),
       ]
 
     if CP.flags & MazdaFlags.GEN1:
+      messages += CarState.get_ti_messages(CP)
       messages += [
         ("ENGINE_DATA", 100),
         ("CRZ_EVENTS", 50),
@@ -282,12 +282,12 @@ class CarState(CarStateBase):
     messages = []
 
     if CP.flags & MazdaFlags.GEN1:
-      if not CP.flags & MazdaFlags.NO_FSC:
-        messages += [
-          #  address, frequency
-          ("CAM_LANEINFO", 2),
-          ("CAM_LKAS", 16),
-        ]
+      # if not CP.flags & MazdaFlags.NO_FSC:
+      #   messages += [
+      #     #  address, frequency
+      #     ("CAM_LANEINFO", 2),
+      #     ("CAM_LKAS", 16),
+      #   ]
 
       if CP.flags & MazdaFlags.RADAR_INTERCEPTOR:
         messages += [
