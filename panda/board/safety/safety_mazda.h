@@ -74,7 +74,7 @@ const SteeringLimits MAZDA_2019_STEERING_LIMITS = {
   .type = TorqueDriverLimited,
 };
 
-const CanMsg MAZDA_TI_TX_MSGS[] = {{MAZDA_LKAS, 0, 8}, {MAZDA_LKAS2, 0, 8, false}, {MAZDA_TI_LKAS, 1, 8}, {MAZDA_CRZ_BTNS, 0, 8}};
+const CanMsg MAZDA_TI_TX_MSGS[] = {{MAZDA_LKAS, 0, 8}, {MAZDA_LKAS2, 0, 8}, {MAZDA_TI_LKAS, 1, 8}, {MAZDA_CRZ_BTNS, 0, 8}};
 const CanMsg MAZDA_RI_TX_MSGS[] = {{MAZDA_LKAS, 0, 8}, {MAZDA_CRZ_BTNS, 0, 8}, {MAZDA_LKAS_HUD, 0, 8},
                                   {MAZDA_CRZ_CTRL, 0, 8}, {MAZDA_CRZ_INFO, 0, 8}, {MAZDA_RADAR_361, 0, 8}, {MAZDA_RADAR_362, 0, 8},
                                   {MAZDA_RADAR_363, 0, 8}, {MAZDA_RADAR_364, 0, 8}, {MAZDA_RADAR_365, 0, 8}, {MAZDA_RADAR_366, 0, 8},
